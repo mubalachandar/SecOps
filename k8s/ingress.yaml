@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secops-ingress
+  namespace: secops-ai-copilot
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # To enable SSL termination, uncomment below and add tls section
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: secops.example.com
+    http:
+      paths:
+      - path: /api(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: secops-backend-svc
+            port:
+              number: 80
+      - path: /()(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: secops-frontend-svc
+            port:
+              number: 80

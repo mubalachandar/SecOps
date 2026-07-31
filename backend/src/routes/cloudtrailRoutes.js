@@ -1,0 +1,12 @@
+const express = require('express');
+const { body, query } = require('express-validator');
+const { authenticate, authorize } = require('../middleware/auth');
+const controller = require('../controllers/cloudtrailController');
+const router = express.Router();
+router.use(authenticate);
+router.get('/events', [query('page').optional().isInt({ min: 1 }), query('limit').optional().isInt({ min: 1, max: 100 }), query('startDate').optional().isISO8601(), query('endDate').optional().isISO8601()], controller.getEvents);
+router.get('/stats', [query('startDate').optional().isISO8601(), query('endDate').optional().isISO8601()], controller.getEventStats);
+router.post('/ingest', authorize('admin'), [body('events').isArray({ min: 1, max: 1000 })], controller.ingestEvents);
+router.post('/simulate', authorize('admin'), [body('scenarioName').isIn(['root_login', 'brute_force', 'data_exfil', 'privilege_escalation', 'defense_evasion'])], controller.simulateAttack);
+router.get('/engine-stats', controller.getEngineStats);
+module.exports = router;

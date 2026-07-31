@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+    image: secops-backend:latest
+    container_name: secops-backend
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    networks:
+      - secops-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+    image: secops-frontend:latest
+    container_name: secops-frontend
+    env_file:
+      - .env
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - secops-network
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    container_name: secops-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - secops-network
+    restart: always
+
+networks:
+  secops-network:
+    driver: bridge

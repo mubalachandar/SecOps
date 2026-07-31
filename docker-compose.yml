@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: secops_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: secops
+      TZ: Asia/Kolkata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - secops-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d secops"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 256m
+    memswap_limit: 256m
+
+  redis:
+    image: redis:7-alpine
+    container_name: secops_redis
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Kolkata
+    command: redis-server --maxmemory 100mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - secops-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 128m
+    memswap_limit: 128m
+
+  backend:
+    build:
+      context: ./backend
+    image: secops-backend:dev
+    container_name: secops-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      TZ: Asia/Kolkata
+    volumes:
+      - ./backend/src:/app/src
+      - backend-logs:/app/logs
+    networks:
+      - secops-network
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    mem_limit: 512m
+    memswap_limit: 512m
+
+  frontend:
+    build:
+      context: ./frontend
+    image: secops-frontend:dev
+    container_name: secops-frontend
+    ports:
+      - "5173:80"
+    environment:
+      TZ: Asia/Kolkata
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - secops-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    mem_limit: 256m
+    memswap_limit: 256m
+
+networks:
+  secops-network:
+    driver: bridge
+
+volumes:
+  backend-logs:
+    driver: local
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

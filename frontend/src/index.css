@@ -1,0 +1,275 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ * SecOps AI Copilot — Design System Foundation
+ * ═══════════════════════════════════════════════════════════════════
+ *
+ * Typography Scale (use consistently everywhere):
+ * ─────────────────────────────────────────────────
+ *   Page title         → text-2xl font-semibold tracking-tight
+ *   Section title      → text-sm font-semibold uppercase tracking-wider text-slate-400 (dark) / text-slate-500 (light)
+ *   Card title         → text-sm font-semibold
+ *   Body text          → text-sm font-normal
+ *   Small / meta text  → text-xs font-medium
+ *   Large stat numbers → text-3xl md:text-4xl font-bold tracking-tight tabular-nums
+ *   Mono values (IPs, IDs, hashes) → font-mono text-xs
+ *
+ * Color Tokens (CSS Variables):
+ * ─────────────────────────────
+ *   --bg-primary, --bg-surface, --bg-surface-2, --bg-canvas-raised
+ *   --border-color, --border-strong
+ *   --text-primary, --text-secondary, --text-muted
+ *   --accent-primary, --accent-danger, --accent-warning, --accent-success
+ *   --severity-critical, --severity-critical-muted
+ *   --severity-high, --severity-high-muted
+ *   --severity-medium, --severity-medium-muted
+ *   --severity-low, --severity-low-muted
+ *
+ * Elevation Classes:
+ * ──────────────────
+ *   .elevation-1, .elevation-2
+ *   .elevation-glow-accent, .elevation-glow-critical
+ *   .surface-texture
+ *
+ * Animation Classes:
+ * ──────────────────
+ *   .animate-fadeIn, .animate-scaleIn
+ *
+ * Utility Classes:
+ * ────────────────
+ *   .focus-ring — accessible focus indicator
+ *   .font-mono-numbers — tabular-nums variant
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Dark Theme (Default) ────────────────────────────────────────── */
+html.dark, :root {
+  --bg-primary: #08090c;
+  --bg-surface: #13151b;
+  --bg-surface-2: #191c24;
+  --bg-raised: #0e1015;
+  --border-color: #1f2229;
+  --border-strong: #2a2e38;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  color-scheme: dark;
+}
+
+html.light {
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #f1f5f9;
+  --bg-raised: #f8fafc;
+  --border-color: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  color-scheme: light;
+}
+
+.theme-bg { background-color: var(--bg-primary); }
+.theme-surface { background-color: var(--bg-surface); }
+.theme-surface-2 { background-color: var(--bg-surface-2); }
+.theme-raised { background-color: var(--bg-raised); }
+.theme-border { border-color: var(--border-color); }
+.theme-text { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-text-muted { color: var(--text-muted); }
+
+/* ─── Base Resets ─────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-primary, #08090c);
+  color: var(--text-primary, #f0f1f3);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+/* ─── Global Smooth Color Transitions ─────────────────────────────── */
+* {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Exclude elements that shouldn't transition (animations, transforms) */
+[class*="animate-"], .no-transition {
+  transition-property: none !important;
+}
+
+/* ─── Default Border Color ────────────────────────────────────────── */
+* {
+  border-color: var(--border-color);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.06) transparent;
+}
+
+/* ─── Scrollbar (Premium Subtle) ──────────────────────────────────── */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* Light mode scrollbar */
+html.light *::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.08);
+}
+
+html.light *::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.16);
+}
+
+/* ─── Responsive Typography ───────────────────────────────────────── */
+.text-responsive-xl { font-size: clamp(1.25rem, 3vw, 1.5rem); }
+.text-responsive-lg { font-size: clamp(1rem, 2.5vw, 1.25rem); }
+
+/* ─── Touch & Input Normalization ─────────────────────────────────── */
+button, a { -webkit-tap-highlight-color: transparent; }
+input, textarea, select { font-size: 16px; }
+
+/* ─── Safe Areas (Mobile) ─────────────────────────────────────────── */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ─── Tabular Numbers ─────────────────────────────────────────────── */
+.font-mono-numbers {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * ELEVATION & DEPTH SYSTEM
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.elevation-1 {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset;
+}
+
+.elevation-2 {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+}
+
+.elevation-glow-accent {
+  box-shadow: 0 0 0 1px rgba(6,182,212,0.15), 0 0 24px rgba(6,182,212,0.08);
+}
+
+.elevation-glow-critical {
+  box-shadow: 0 0 0 1px rgba(240,56,74,0.2), 0 0 24px rgba(240,56,74,0.12);
+}
+
+/* Light mode elevations use softer, less dramatic shadows */
+html.light .elevation-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+html.light .elevation-2 {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+html.light .elevation-glow-accent {
+  box-shadow: 0 0 0 1px rgba(6,182,212,0.2), 0 0 20px rgba(6,182,212,0.06);
+}
+
+html.light .elevation-glow-critical {
+  box-shadow: 0 0 0 1px rgba(224,45,60,0.2), 0 0 20px rgba(224,45,60,0.06);
+}
+
+/* ─── Surface Texture ─────────────────────────────────────────────── */
+.surface-texture {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.015) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+html.light .surface-texture {
+  background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.02) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * FOCUS RING (Accessible + Premium)
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 2px var(--bg-primary, #08090c), 0 0 0 4px rgba(6,182,212,0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * ANIMATIONS
+ * Only use opacity + transform (GPU-composited, 60fps)
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.15s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Page-level entrance */
+main > * {
+  animation: fadeIn 200ms ease-in-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * GLASS CARD (Legacy Compat)
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.glass-card {
+  background: rgba(14, 16, 21, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+}
+
+/* ─── Variables Utilities ─────────────────────────────────────────── */
+.bg-page { background-color: var(--bg-primary); }
+.bg-surface { background-color: var(--bg-surface); }
+.bg-surface-2 { background-color: var(--bg-surface-2); }
+.bg-raised { background-color: var(--bg-canvas-raised); }
+.border-theme { border-color: var(--border-color); }
+.border-theme-strong { border-color: var(--border-strong); }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }

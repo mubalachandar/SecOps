@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Runtime and build output
+logs/
+dist/
+build/
+coverage/
+.nyc_output/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tool caches
+.cache/
+.vite/
+
+# Generated PDF reports — never commit user report files
+backend/reports/*.pdf
+*.pdf
+
+# Sensitive test/debug files generated during development
+backend/login-response.json
+backend/test-chat.js
+backend/fix_ips.js
+backend/fix_ips_india.js
+frontend/page-content*.html
+frontend/test-render*.cjs
+frontend/test-render*.js

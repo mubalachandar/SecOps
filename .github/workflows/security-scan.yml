@@ -1,0 +1,63 @@
+name: Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 9 * * 1'
+
+jobs:
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Backend Dependencies
+        run: npm ci --ignore-scripts
+        working-directory: ./backend
+
+      - name: Audit Backend Dependencies
+        run: npm audit --audit-level=high
+        working-directory: ./backend
+
+      - name: Install Frontend Dependencies
+        run: npm ci --ignore-scripts
+        working-directory: ./frontend
+
+      - name: Audit Frontend Dependencies
+        run: npm audit --audit-level=high
+        working-directory: ./frontend
+
+      - name: Generate Audit Report
+        if: always()
+        run: |
+          cd backend && npm audit --json > ../backend-audit.json || true
+          cd ../frontend && npm audit --json > ../frontend-audit.json || true
+        continue-on-error: true
+
+      - name: Upload Audit Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: npm-audit-reports
+          path: ./*-audit.json
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Scan for Leaked Secrets
+        uses: trufflesecurity/trufflehog@v3.0
+        with:
+          extra_args: --debug --only-verified

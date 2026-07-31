@@ -1,0 +1,15 @@
+const express = require('express');
+const { body, param, query } = require('express-validator');
+const { authenticate, authorize } = require('../middleware/auth');
+const controller = require('../controllers/alertController');
+const router = express.Router();
+const statuses = ['open', 'investigating', 'resolved', 'false_positive'];
+router.use(authenticate);
+router.get('/', [query('page').optional().isInt({ min: 1 }), query('limit').optional().isInt({ min: 1, max: 100 }), query('severity').optional(), query('status').optional()], controller.getAlerts);
+router.get('/stats', controller.getAlertStats);
+router.put('/bulk-status', authorize('admin', 'analyst'), [body('alertIds').isArray({ min: 1, max: 100 }), body('alertIds.*').isUUID(), body('status').isIn(statuses)], controller.bulkUpdateStatus);
+router.get('/:id', [param('id').isString().trim().isLength({ min: 1, max: 100 })], controller.getAlertById);
+router.put('/:id/status', authorize('admin', 'analyst'), [param('id').isString().trim().isLength({ min: 1, max: 100 }), body('status').isIn(statuses), body('notes').optional().isString().isLength({ max: 2000 })], controller.updateAlertStatus);
+router.get('/:id/analysis', [param('id').isString().trim().isLength({ min: 1, max: 100 })], controller.getAlertAnalysis);
+router.post('/:id/analyze', authorize('admin', 'analyst'), [param('id').isString().trim().isLength({ min: 1, max: 100 })], controller.triggerAIAnalysis);
+module.exports = router;

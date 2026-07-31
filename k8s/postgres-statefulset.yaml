@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: secops-postgres
+  namespace: secops-ai-copilot
+spec:
+  serviceName: secops-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secops-postgres
+  template:
+    metadata:
+      labels:
+        app: secops-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgrespassword
+        - name: POSTGRES_DB
+          value: secops
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secops-postgres
+  namespace: secops-ai-copilot
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: secops-postgres
+  type: ClusterIP

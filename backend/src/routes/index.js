@@ -1,0 +1,30 @@
+const express = require('express');
+const authRoutes = require('./authRoutes');
+const alertRoutes = require('./alertRoutes');
+const cloudtrailRoutes = require('./cloudtrailRoutes');
+const rulesRoutes = require('./rulesRoutes');
+const analyticsRoutes = require('./analyticsRoutes');
+const chatRoutes = require('./chatRoutes');
+const mitreRoutes = require('./mitreRoutes');
+const incidentsRoutes = require('./incidentsRoutes');
+const reportsRoutes = require('./reportsRoutes');
+const geoipRoutes = require('./geoipRoutes');
+const threatIntelRoutes = require('./threatIntelRoutes');
+
+const router = express.Router();
+const usersRoutes = require('./usersRoutes');
+
+router.use('/auth', authRoutes);
+router.use('/alerts', alertRoutes);
+router.use('/cloudtrail', cloudtrailRoutes);
+router.use('/rules', rulesRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/users', usersRoutes);
+router.use('/chat', chatRoutes);
+router.use('/mitre', mitreRoutes);
+router.use('/incidents', incidentsRoutes);
+router.use('/notifications', require('./notificationsRoutes'));
+router.use('/reports', reportsRoutes);
+router.use('/geoip', geoipRoutes);
+router.use('/threat-intel', threatIntelRoutes);
+module.exports = router;

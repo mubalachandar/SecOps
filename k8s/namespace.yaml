@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: secops-ai-copilot
+  labels:
+    name: secops-ai-copilot
+    environment: production
