@@ -98,8 +98,8 @@
 
 ### Prerequisites
 
-- **Docker** and **Docker Compose** (v2)
-- **Node.js 18+** (for local development only)
+- **Docker** and **Docker Compose** (v2) — *This is the ONLY requirement to run the project!*
+- **Node.js 20+** (only needed if you want to develop locally without Docker)
 - **AWS account** with CloudTrail enabled *(optional — defaults to simulation mode)*
 - **Gemini API key** — free tier available at [Google AI Studio](https://aistudio.google.com/)
 
@@ -107,13 +107,13 @@
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/yourusername/secops-ai-copilot.git
-cd secops-ai-copilot
+git clone https://github.com/mubalachandar/SecOps.git
+cd SecOps
 ```
 
 **2. Configure environment**
 ```bash
-cp backend/.env.example backend/.env
+cp .env.example backend/.env
 ```
 
 Edit `backend/.env` — required variables are marked below.
