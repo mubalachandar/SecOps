@@ -103,7 +103,29 @@
 - **AWS account** with CloudTrail enabled *(optional — defaults to simulation mode)*
 - **Gemini API key** — free tier available at [Google AI Studio](https://aistudio.google.com/)
 
-### Installation
+### 🚀 Instant Start (Pre-built Docker Hub Images)
+
+The absolute fastest way to run this project is to use the pre-built images from Docker Hub. You don't even need to clone the repository!
+
+**1. Download the Docker Hub compose file and env template**
+```bash
+curl -O https://raw.githubusercontent.com/mubalachandar/SecOps/main/docker-compose.hub.yml
+curl -o .env https://raw.githubusercontent.com/mubalachandar/SecOps/main/.env.example
+```
+
+**2. Add your Gemini API Key**
+Open `.env` and add your `GEMINI_API_KEY` and `GEMINI_CHAT_API_KEY`.
+
+**3. Start the platform**
+```bash
+docker compose -f docker-compose.hub.yml up -d
+```
+
+That's it! The dashboard will be available at `http://localhost:5173`.
+
+---
+
+### 💻 Developer Start (Build from Source)
 
 **1. Clone the repository**
 ```bash
