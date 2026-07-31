@@ -443,25 +443,7 @@ secops-ai-copilot/
 
 ---
 
-## Resume Bullets
 
-> If you are using this project in your portfolio, here are production-quality resume bullet points:
-
-- **Engineered a real-time SOC platform** processing live AWS CloudTrail events with a custom MITRE ATT&CK detection engine achieving sub-second alert generation across 10 threat detection rules with 5 pattern-matching strategies (exact, regex, JSONPath, composite)
-
-- **Integrated Gemini 1.5 Flash AI** for automated alert triage with risk scoring (0–100), attack chain analysis, and IOC extraction using a dual-key architecture and request queue with exponential backoff — reducing analyst triage effort by eliminating low-confidence noise
-
-- **Architected a WebSocket-based real-time alert streaming system** with JWT authentication, 30-second heartbeat, and dead connection pruning — supporting concurrent analyst sessions with automatic client-side reconnection and exponential backoff
-
-- **Built an alert correlation engine** using 6 pattern-based rules to automatically group related alerts into security incidents, enabling campaign-level threat visibility beyond individual alert analysis
-
-- **Deployed full-stack application on Docker** with PostgreSQL 15, Redis 7, per-service health checks, graceful SIGTERM shutdown, Redis-backed distributed rate limiting, and structured JSON logging via Winston — production-ready from day one
-
-- **Integrated three-source threat intelligence pipeline** (NVD CVE + EPSS + CISA KEV) with composite risk scoring formula `(CVSS×0.4) + (EPSS×0.4) + (KEV bonus×0.2)` — all free public APIs with Redis caching
-
-- **Implemented defense-in-depth security**: JWT HS256 with issuer/audience validation, bcrypt cost-12 hashing, Helmet.js with strict CSP/HSTS, Redis-backed rate limiting (auth: 10 req/15min, general: 100 req/15min), parameterized SQL, and path traversal protection on report downloads
-
----
 
 ## Security Considerations
 
